@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="oracon.Views.ProductsKartView" 
+             xmlns:converters="clr-namespace:oracon.Converters"
+             xmlns:local="clr-namespace:oracon.Behaviors;assembly=oracon"
+             BackgroundColor="{StaticResource DefaultBackgroundColor}"
+             Title="Carrinho">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+                <converters:NegativeConverter x:Key="negative"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="tbiKart" Order="Primary" Text="Finalizar" Priority="0" Clicked="ToolItemFinalizeOrder_Clicked"/>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        
+         <AbsoluteLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            
+            <StackLayout AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,1,1,1"
+                         IsVisible="{Binding Loading}">
+                <ActivityIndicator 
+                                   IsRunning="true"
+                                   IsVisible="true" />
+            </StackLayout>
+            
+            <AbsoluteLayout AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="1,1,1,1" IsVisible="{Binding Loading,  Converter={StaticResource Key=negative}}">
+             
+           <!-- <BoxView VerticalOptions="Start" 
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,0.1,1,1"
+                         Color="{StaticResource PrimaryColor}"
+                         HeightRequest="120" 
+                         Margin="0,0,0,0"/>
+                -->
+           <!-- <BoxView VerticalOptions="End" 
+                         Color="{StaticResource PrimaryColor}"
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,1,1,1"
+                         HeightRequest="130" 
+                         Margin="0,0,0,0"/>-->
+                
+             
+            <!--<Frame x:Name="FrameContainerStep" 
+                   HasShadow="false"
+                   AbsoluteLayout.LayoutFlags="All"
+                   AbsoluteLayout.LayoutBounds="1,0.9,1,1"
+                   BackgroundColor="Transparent" 
+                   Margin="15, 0, 15, 10">
+                <StackLayout Orientation="Vertical">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Cliente" 
+                               HorizontalTextAlignment="Center" 
+                               HorizontalOptions="StartAndExpand" 
+                               TextColor="{StaticResource SecondaryColor}" />
+                        <Label Text="Produtos" 
+                               HorizontalTextAlignment="Center" 
+                               HorizontalOptions="CenterAndExpand" 
+                               TextColor="White" />
+                        <Label Text="Finalizar"
+                               HorizontalTextAlignment="Center" 
+                               HorizontalOptions="EndAndExpand" 
+                               TextColor="White" />
+                    </StackLayout>
+                    <Image Source="ic_etapas1.png" Margin="15, 0"/>
+                </StackLayout>
+            </Frame>    -->
+            
+            <StackLayout AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,0,1,0.96">
+             
+                 <ListView x:Name="lvProducts"
+                                  BackgroundColor="Transparent" 
+                                  ItemsSource="{Binding Products}" 
+                                  SelectedItem="{Binding SelectedProduct}"
+                                  SeparatorColor="Transparent" 
+                                  SelectionMode="Single"
+                                  RowHeight="190"
+                                  IsVisible="{Binding HasProducts}"
+                                  CachingStrategy="RecycleElement"
+                                  Header="{Binding}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <ContentView BackgroundColor="Transparent">   
+                                                   
+                                                 <Frame
+                                                    CornerRadius="5" 
+                                                    HasShadow="false" 
+                                                    Margin="2,5"
+                                                    Padding="10,5">
+                                                            
+                                                    <!-- Imagem & Informações do Produto -->
+                                                    <StackLayout Margin="0" Spacing="2" Padding="0">
+                                                        <Grid Margin="0" Padding="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <!-- 40% -->
+                                                                <ColumnDefinition Width="25*"/>
+                                                                <!-- 60% -->
+                                                                <ColumnDefinition Width="75*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="100"/>
+                                                            </Grid.RowDefinitions>
+                                                            
+                                                            <!-- Cabeçalho: Imagem -->
+                                                            <Image x:Name="imgProduct"
+                                                                   Source="fotoRoupa" 
+                                                                   VerticalOptions="Start"
+                                                                   WidthRequest="130"
+                                                                   Grid.Row="0" Grid.Column="0">
+                                                                <Image.GestureRecognizers>
+                                                                    <TapGestureRecognizer/>
+                                                                </Image.GestureRecognizers>
+                                                            </Image>
+                                                            
+                                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
+                                                               
+                                                                     <!-- Descrição -->
+                                                                     <Label Text="{Binding Description}"
+                                                                            TextColor="{StaticResource SecondaryColor}"
+                                                                            FontFamily="{StaticResource NormalFont}"
+                                                                            FontAttributes="Bold"
+                                                                            FontSize="Medium"/>
+                                                                    
+                                                                     <!-- SKU -->
+                                                                     <Label Text="{Binding SKU}"
+                                                                            TextColor="{StaticResource FontColor}"
+                                                                            FontFamily="{StaticResource LightFont}"
+                                                                            FontSize="Small"/>
+                                                            
+                                                                     <!-- Quantidade -->
+                                                                    <StackLayout Orientation="Horizontal">
+                                                                        
+                                                                         <Label Text="Quantidade: "
+                                                                                TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource ThinFont}"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                         <Label Text="{Binding OrderAmount}"
+                                                                                TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource LightFont}"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                        <!-- "{Binding Valor, StringFormat='{0:C2}'}"  -->
+                                                                    </StackLayout>
+                                                                    
+                                                                    <!-- Cabeçalho: Valor Bruto -->
+                                                                    <StackLayout Orientation="Horizontal">
+                                                                        
+                                                                         <Label Text="Valor Bruto:"
+                                                                                TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource LightFont}"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                         <Label x:Name="lblGrossAmount"
+                                                                                Text="{Binding GrossAmount}"
+                                                                                TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource NormalFont}"
+                                                                                FontAttributes="Bold"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                    <!-- "{Binding Valor, StringFormat='{0:C2}'}"  -->
+                                                                    </StackLayout>
+                                                                    
+                                                                     <!-- Cabeçalho: Valor Líquido -->
+                                                                    <StackLayout Orientation="Horizontal">
+                                                                        
+                                                                         <Label Text="Valor Líquido:"
+                                                                                TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource LightFont}"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                         <Label x:Name="lblNetAmount"
+                                                                                Text="{Binding NetAmount}"
+                                                                                 TextColor="{StaticResource FontColor}"
+                                                                                FontFamily="{StaticResource NormalFont}"
+                                                                                FontAttributes="Bold"
+                                                                                FontSize="Small"/>
+                                                                        
+                                                                    </StackLayout>
+                                                            </StackLayout>
+                                                        </Grid>
+                                                        
+                                                         <Grid Margin="0,15,0,-5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="50*"/>
+                                                                <ColumnDefinition Width="50*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="40"/>
+                                                            </Grid.RowDefinitions>
+                                                            <!-- ID do produto, para poder usar no evento de click -->
+                                                            <Label Text="{Binding ID}"
+                                                                    IsVisible="false"/>
+                                                        
+                                                            <Button Text="Quantidade" 
+                                                                    BackgroundColor="{StaticResource ProductCardQuantityColor}"
+                                                                    TextColor="White"
+                                                                    FontSize="16"
+                                                                    Clicked="Quantity_Clicked"
+                                                                    Grid.Row="0" Grid.Column="0"/>
+                                                                
+                                                            <Button Text="Excluir" 
+                                                                    BackgroundColor="{StaticResource ProductCardExcludeColor}"
+                                                                    TextColor="White"
+                                                                    FontSize="16"
+                                                                    Clicked="Exclude_Clicked"
+                                                                    Grid.Row="0" Grid.Column="1"/>
+                                                            
+                                                        </Grid>
+                                                                  
+                                                    </StackLayout>
+                                                 </Frame>
+                 
+                                            </ContentView>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                             <ListView.HeaderTemplate>  
+                                <DataTemplate>  
+                                    <ContentView>  
+                                    <!-- Header do List -->
+                                        <StackLayout
+                                                HorizontalOptions="FillAndExpand">
+                                            <StackLayout
+                                                HorizontalOptions="FillAndExpand"
+                                                BackgroundColor="{StaticResource PrimaryColor}">
+                                                  <Frame x:Name="FrameContainerStep" 
+                                                       HasShadow="false"
+                                                       HorizontalOptions="CenterAndExpand"
+                                                       BackgroundColor="{StaticResource PrimaryColor}" 
+                                                       Margin="0, 0, 0, 10">
+                                                    <StackLayout Orientation="Vertical">
+                                                        <StackLayout Orientation="Horizontal" >
+                                                            <Label Text="Cliente" 
+                                                                   HorizontalTextAlignment="Center" 
+                                                                   HorizontalOptions="StartAndExpand" 
+                                                                   TextColor="{StaticResource SecondaryColor}" />
+                                                            <Label Text="Produtos" 
+                                                                   HorizontalTextAlignment="Center" 
+                                                                   HorizontalOptions="CenterAndExpand" 
+                                                                   TextColor="{StaticResource SecondaryColor}" />
+                                                            <Label Text="Finalizar"
+                                                                   HorizontalTextAlignment="Center" 
+                                                                   HorizontalOptions="EndAndExpand" 
+                                                                   TextColor="White" />
+                                                        </StackLayout>
+                                                        <Image Source="ic_etapas2.png" 
+                                                               Margin="15, 0"/>
+                                                    </StackLayout>
+                                                 </Frame>    
+                                            
+                                                 <Frame 
+                                                        CornerRadius="5" 
+                                                        Margin="5,2" 
+                                                        HasShadow="false" 
+                                                        Padding="32,20">
+                                                    <StackLayout Orientation="Vertical">
+                                                        <Label Text="{Binding SocialName}" 
+                                                               LineBreakMode="TailTruncation" 
+                                                               TextColor="{StaticResource FontColor}" 
+                                                               FontFamily="{StaticResource NormalFont}" 
+                                                               FontSize="Medium"
+                                                               VerticalOptions="CenterAndExpand"/>
+                                                        
+                                                        <Label Text="{Binding CPF_CNPJ}" 
+                                                               LineBreakMode="TailTruncation" 
+                                                               TextColor="{StaticResource FontColor}" 
+                                                               FontFamily="{StaticResource LightFont}" 
+                                                               FontSize="Medium"
+                                                               VerticalOptions="CenterAndExpand"/>
+                                                    </StackLayout>
+                                                </Frame>
+                                            </StackLayout>
+                                            
+                                           <Button Text="Adicionar Produto" 
+                                                TextColor="White" 
+                                                FontSize="20"
+                                                HeightRequest="50"
+                                                FontFamily="{StaticResource NormalFont}"
+                                                BackgroundColor="{StaticResource SecondaryColor}"
+                                                Margin="40,5"
+                                                Clicked="ButtonAddProduct_Clicked" /> 
+                                        </StackLayout>
+                                    </ContentView>  
+                                </DataTemplate>  
+                            </ListView.HeaderTemplate> 
+                        </ListView>
+                    
+                 <StackLayout IsVisible="{Binding HasProducts, Converter={StaticResource Key=negative}}">
+                    <Label Text="Você ainda não adicionou produtos ao seu pedido." 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           FontFamily="{StaticResource NormalFont}"
+                           TextColor="{StaticResource SecondaryColor}"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Margin="40,5" />
+                        
+                    <Label Text="Você também pode criar um novo pedido usando como base um pedido do histórico." 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           FontFamily="{StaticResource NormalFont}"
+                           TextColor="{StaticResource FontColor}"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Margin="40,60,40,5" />
+                        
+                     <Button Text="Duplicar Produto" 
+                            TextColor="White" 
+                            FontSize="20"
+                            HeightRequest="50"
+                            FontFamily="{StaticResource NormalFont}"
+                            BackgroundColor="{StaticResource PrimaryColor}"
+                            Margin="40,5" />     
+                </StackLayout>
+                
+            </StackLayout>
+                
+           <!-- Footer | Valores -->
+            <AbsoluteLayout x:Name="FooterBox"
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,1,1,0.35"
+                         BackgroundColor="Transparent"
+                         VerticalOptions="FillAndExpand"
+                         HorizontalOptions="FillAndExpand"
+                         Margin="0,2,0,0"
+                        >
+                    
+                    <BoxView 
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,1,1,0.9"
+                         BackgroundColor="{StaticResource PrimaryColor}"/>
+                   
+                        
+                    <StackLayout 
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="1,1,1,0.75"
+                        Margin="0,0,0,0"
+                        Padding="0,0,0,0">
+                        
+                        <!-- Total de Peças -->
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Total de peças: " TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding TotalQuantity}" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                      
+                        <!-- Valor Bruto Total -->
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Total Bruto: " TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding TotalGrossAmount, StringFormat='{0:C2}'}" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    
+                         <!-- Valor Líquido Total-->
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Total Líquido: " TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding TotalNetAmount, StringFormat='{0:C2}'}" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    
+                        <!-- Desconto 1 -->
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Desconto 1: " TextColor="{StaticResource FontColor}" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="10%" FontAttributes="Bold" TextColor="{StaticResource FontColor}" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                     
+                        <!-- Desconto 2 -->
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Desconto 2: " TextColor="{StaticResource FontColor}" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="8%" FontAttributes="Bold" TextColor="{StaticResource FontColor}" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    </StackLayout>
+                    
+                     <Image 
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0.5,0.01,0.25,0.25"
+                        x:Name="footerIcon" 
+                        Source="footerIconDOWN"  
+                        Margin="0,0,0,0"
+                        >
+                        <Image.GestureRecognizers>
+                         <TapGestureRecognizer
+                            Tapped="FooterIcon_Tapped"/>
+                        </Image.GestureRecognizers>
+                     </Image>
+                    
+                  <!--  <AbsoluteLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FooterAnimateOut_Tapped"/>
+                    </AbsoluteLayout.GestureRecognizers>-->
+            </AbsoluteLayout>  
+                
+              <!-- Pop Ups -->  
+            <StackLayout    x:Name="BoxesOverlayModal"
+                            AbsoluteLayout.LayoutFlags="All"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            Opacity="0.5"
+                            BackgroundColor="Black"
+                            IsVisible="false">
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="BoxesClose_Tapped" />
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+            <Frame
+                x:Name="BoxesModal"
+                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                AbsoluteLayout.LayoutBounds="0.5,0.5,0.95,300"
+                CornerRadius="10"
+                HasShadow="true"
+                IsVisible="false">
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Escolha a quantidade de caixas do pedido" 
+                           FontSize="Medium" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource FontColor}" 
+                           HorizontalTextAlignment="Center"
+                           Margin="0, 0, 0, 10" />
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24*"/>
+                            <ColumnDefinition Width="38*"/>
+                            <ColumnDefinition Width="38*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="AUTO"/>
+                            <RowDefinition Height="AUTO"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Label Text="Qtde" 
+                               FontSize="Medium" 
+                               TextColor="{StaticResource FontColor}" 
+                               HorizontalOptions="Center" 
+                               Grid.Column="0" 
+                               Grid.Row="0"/>
+                        <Label Text="Data Inicial" 
+                               FontSize="Medium" 
+                               TextColor="{StaticResource FontColor}" 
+                               HorizontalOptions="Center" 
+                               Grid.Column="1" 
+                               Grid.Row="0" />
+                        <Label Text="Data Final" 
+                               FontSize="Medium" 
+                               TextColor="{StaticResource FontColor}" 
+                               HorizontalOptions="Center" 
+                               Grid.Column="2" 
+                               Grid.Row="0" />
+                        
+                        <Entry x:Name="EntryQuantity"
+                               Placeholder="00"
+                               FontSize="Small" 
+                               TextColor="{StaticResource FontColor}" 
+                               Text="{Binding SelectedProductOrderAmount}"
+                               HorizontalTextAlignment="Center" 
+                               Keyboard="Numeric"
+                               Grid.Column="0" 
+                               Grid.Row="1">
+                            <Entry.Behaviors>
+                                <local:NumericIntegerBehavior />
+                            </Entry.Behaviors>
+                        </Entry>
+                        <DatePicker
+                            x:Name="DatePickerInitial"
+                            Format="dd/MM/yyyy"
+                            FontSize="Small"
+                            TextColor="{StaticResource FontColor}"
+                            Date="{Binding InitialDate}"
+                            Grid.Column="1"
+                            Grid.Row="1" />
+                        <DatePicker
+                            x:Name="DatePickerFinal"
+                            Format="dd/MM/yyyy"
+                            FontSize="Small"
+                            TextColor="{StaticResource FontColor}"
+                            Date="{Binding FinalDate}"
+                            Grid.Column="2"
+                            Grid.Row="1" />
+                    </Grid>
+                    
+                    <Label Text="Subtotal" 
+                           FontSize="Medium" 
+                           TextColor="{StaticResource FontColor}" 
+                           HorizontalTextAlignment="Center"
+                           Margin="0, 10, 0, 0" />
+                        
+                    <Label Text="{Binding SelectedProductSubTotal, StringFormat='{0:C2}'}" 
+                           FontSize="Medium" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource FontColor}" 
+                           HorizontalTextAlignment="Center" 
+                           Margin="0, 0, 0, 10" />
+                    
+                    <Button
+                        BackgroundColor="{StaticResource SecondaryColor}"
+                        TextColor="White"
+                        Text="Alterar"
+                        Margin="10,0"
+                        Clicked="BoxesAlterQuantity_Clicked"/>
+                </StackLayout>
+            </Frame>
+           
+            <!-- Pop Up - Exlcuir -->
+            <Frame
+                x:Name="BoxeExclude"
+                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                AbsoluteLayout.LayoutBounds="0.5,0.5,0.95,200"
+                CornerRadius="10"
+                HasShadow="true"
+                IsVisible="false">
+                   
+                    <StackLayout Padding="10" Spacing="10">
+                        
+                        <Label Text="Exluir Produto"
+                               FontSize="Large"
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="{StaticResource NormalFont}"
+                               HorizontalOptions="CenterAndExpand"
+                               HorizontalTextAlignment="Center" />
+                        
+                         <Label Text="Tem certeze de que deseja exlcuir este produto de seu pedido?"
+                               FontSize="Medium"
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="{StaticResource LightFont}"
+                               HorizontalOptions="CenterAndExpand"
+                               HorizontalTextAlignment="Center" />
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Button
+                                    Text="Não" 
+                                    TextColor="White" 
+                                    FontSize="20"
+                                    HeightRequest="50"
+                                    FontFamily="{StaticResource NormalFont}"
+                                    BackgroundColor="{StaticResource SecondaryColor}"
+                                    Clicked="BoxeExcludeNo_Clicked"
+                                    Grid.Row="0"
+                                    Grid.Column="0" />
+                            
+                            <Button
+                                    Text="Sim" 
+                                    TextColor="White" 
+                                    FontSize="20"
+                                    HeightRequest="50"
+                                    FontFamily="{StaticResource NormalFont}"
+                                    BackgroundColor="{StaticResource SecondaryColor}"
+                                    Clicked="BoxeExcludeYes_Clicked"
+                                    Grid.Row="0"
+                                    Grid.Column="1"/>
+                            
+                        </Grid>
+                        
+                    </StackLayout>
+            </Frame>
+        </AbsoluteLayout>
+        </AbsoluteLayout>
+        
+    </ContentPage.Content>
+</ContentPage>
